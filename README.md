@@ -1,5 +1,8 @@
 
-# Necrobot / MobBot Visualizer
+# Necrobot / MobBot Visualizer Chrome Verson
+
+Clone necrobotvisualizer from https://github.com/nicoschmitt/necrobotvisualizer
+Clone gmaps from http://github.com/HPNeo/gmaps
 
 You have to be up to date on the bot side (master or maybe latest release).  
 In the Visualizer, the url on the config page should match the port you configured on bot side (both have the same default).
@@ -15,16 +18,6 @@ The important thing is websocket url and port. Default is also bot default so it
 You can also choose local for Pokemon name display.
 
 ## Run from Code
-
-1. Install [Node.js](https://nodejs.org/en/download/)
-2. Start the node command line
-3. Navigate to your necrobotvisualizer folder
-4. To install enter: ```npm install```
-5. To start enter: ```npm start```
-
-## Example
-
-![Screenshot](https://github.com/nicoschmitt/necrobotvisualizer/blob/master/screenshots/01.png?raw=true)  
-![Screenshot](https://github.com/nicoschmitt/necrobotvisualizer/blob/master/screenshots/02.png?raw=true)  
-![Screenshot](https://github.com/nicoschmitt/necrobotvisualizer/blob/master/screenshots/03.png?raw=true)  
-![Screenshot](https://github.com/nicoschmitt/necrobotvisualizer/blob/master/screenshots/04.png?raw=true)  
+ 1. Download Zip.
+ 2. Double Chick Index.html
+ 

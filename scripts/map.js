@@ -223,6 +223,12 @@ Map.prototype.addCatch = function(pt) {
         	title: pkm,
         	icon: `./assets/pokemon/${pt.id}.png`
         });
+        new google.maps.Marker({
+  				position: new google.maps.LatLng( pt.lat, pt.lng ),
+  				map: this.streetview, // your code doesn't have a 'map' variable
+  				icon: `./assets/pokemon/${pt.id}.png`,
+  				title: pkm
+				});
     }
 }
 
@@ -239,8 +245,15 @@ Map.prototype.addVisitedPokestop = function(pt) {
           lat: pt.lat,
           lng: pt.lng,
         	title: pt.name,
-        	icon: `./assets/img/pokestop_cooldown.png`
+        	icon: './assets/img/pokestop_cooldown.png'
         });
+        pt.marker2=new google.maps.Marker({
+  				position: new google.maps.LatLng( pt.lat, pt.lng ),
+  				map: this.streetview, // your code doesn't have a 'map' variable
+  				icon: './assets/img/pokestop_cooldown.png',
+  				title: pkm
+				});
+
     } else {
         Object.assign(ps, pt);
     }
@@ -248,6 +261,7 @@ Map.prototype.addVisitedPokestop = function(pt) {
     ps.visited = true;
     if (ps && ps.marker) {
         ps.marker.setIcon(`./assets/img/pokestop_cooldown.png`);        
+        pt.marker2.setIcon(`./assets/img/pokestop_cooldown.png`);        
     }
 }
 
@@ -277,8 +291,15 @@ Map.prototype.addPokestops = function(forts) {
         			title: pt.name,
         			icon: `./assets/img/${icon}.png`
         		});
+        		pt.marker2=new google.maps.Marker({
+  						position: new google.maps.LatLng( pt.lat, pt.lng ),
+  						map: this.streetview, // your code doesn't have a 'map' variable
+  						icon: `./assets/img/${icon}.png`,
+  						title: pt.name
+						});
         } else {
             pt.marker.setIcon(`./assets/img/${icon}.png`);
+            pt.marker2.setIcon(`./assets/img/${icon}.png`);
         }
     }
 
@@ -308,6 +329,7 @@ Map.prototype.updatePokestopsStatus = function() {
                 icon = "pokestop_visited";
             }
             pt.marker.setIcon(`./assets/img/${icon}.png`);
+            pt.marker2.setIcon(`./assets/img/${icon}.png`);
         }
     });
 }

@@ -22,3 +22,6 @@ You can also choose local for Pokemon name display.
  2. Turn on Websocket on Necrobot.
  3. Double Chick Index.html
  
+![Screenshot](https://github.com/HassenLin/necrobotvisualizer/blob/master/screenshots/screenshot1.png?raw=true)  
+![Screenshot](https://github.com/HassenLin/necrobotvisualizer/blob/master/screenshots/screenshot2.png?raw=true)  
+![Screenshot](https://github.com/HassenLin/necrobotvisualizer/blob/master/screenshots/screenshot3.png?raw=true)  

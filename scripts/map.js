@@ -3,8 +3,6 @@ var Map = function(mapDiv,streetViewDiv) {
 
     //this.layerCatches = L.markerClusterGroup({ maxClusterRadius: 30 });
     //this.layerPath = new L.LayerGroup();
-    this.mapDivStr = mapDiv;
-    this.streetViewDivStr = streetViewDiv;
     this.map = null;    
         
     this.destination = null;
@@ -13,39 +11,38 @@ var Map = function(mapDiv,streetViewDiv) {
     this.catches = [];
     this.pokestops = [];
     this.pokemonList = [];
-    this.divMap = document.getElementById("map");
-    this.divStreetView = document.getElementById("streetview");
+    this.divMap = document.getElementById(mapDiv);
+    this.divStreetView = document.getElementById(streetViewDiv);
 };
 Map.prototype.setGMapPosition = function(nowLat,nowLng) {
 	if(this.map == null)
 	{
 		$(".loading").hide();
-		this.map = new GMaps({
-          el:  '#'+this.mapDivStr,
-        	lat: nowLat,
-          lng : nowLng,
-          zoom: 18,
-          streetViewControl : false          
-        });
-		this.map.map.addListener('dblclick',this.setDestination); 
+		var LatLng=new google.maps.LatLng( nowLat, nowLng );
+		this.map = new google.maps.Map(this.divMap,{
+			center:LatLng,
+      zoom: 18,
+      streetViewControl : false          
+    });
+		this.map.addListener('dblclick',this.setDestination); 
   	this.flightPolyline= new google.maps.Polyline({
         	geodesic: true,
         	strokeColor: '#131540',
         	strokeOpacity: 0.6,
         	strokeWeight: 2
         });
-    this.flightPolyline.setMap(this.map.map);
+    this.flightPolyline.setMap(this.map);
     this.flightPath = this.flightPolyline.getPath();
-		this.flightPath.push(new google.maps.LatLng( nowLat, nowLng ));
-    this.me = this.map.addMarker({
-          lat: nowLat,
-          lng: nowLng,
+		this.flightPath.push(LatLng);
+    this.me = new google.maps.Marker({
+          position: LatLng,
         	title: 'Player',
+        	map: this.map,
         	zIndex: google.maps.Marker.MAX_ZINDEX + 1,
         	icon: './assets/img/Poke_Ball.png',
         	details: {
           	database_id: 42,
-          	author: 'HPNeo'
+          	author: 'Hassen'
           },
         	click: function(e){
           	if(console.log)
@@ -59,19 +56,17 @@ Map.prototype.setGMapPosition = function(nowLat,nowLng) {
         });  
 	    if(global.config.showStreetView)
   	  {      	
-  	  	this.streetview = this.map.createPanorama({
-        	el:  '#'+this.streetViewDivStr,
-          lat: nowLat,
-          lng: nowLng,
-        });
-    		this.map.map.setStreetView(this.streetview);      
-      	google.maps.event.trigger(this.map.map, "resize");
+  	  	this.streetview = new google.maps.StreetViewPanorama(this.divStreetView,{
+        	position:LatLng,
+        	map: this.map
+        });   
+      	google.maps.event.trigger(this.map, "resize");
     	}
   		else
     	{
     		$("#streetview").hide();
       	this.divMap.style.width="100%";
-      	google.maps.event.trigger(this.map.map, "resize");
+      	google.maps.event.trigger(this.map, "resize");
     	}
   }
   else
@@ -140,7 +135,7 @@ Map.prototype.initPath = function() {
         	strokeOpacity: 0.6,
         	strokeWeight: 2
     });
-    this.flightPolyline.setMap(this.map.map);
+    this.flightPolyline.setMap(this.map);
     this.flightPath = this.flightPolyline.getPath();
     if (this.steps.length >= 1) {
         var pts = Array.from(this.steps, pt => L.latLng(pt.lat, pt.lng));
@@ -164,7 +159,7 @@ Map.prototype.initCatches = function() {
         var LatLng=new google.maps.LatLng( pt.lat, pt.lng );
         new google.maps.Marker({
           position: LatLng,
-        	map: this.map.map, 
+        	map: this.map, 
         	title: pkm,
         	icon: `./assets/pokemon_small/${pt.id}.png`
         });
@@ -187,7 +182,7 @@ Map.prototype.initPokestops = function() {
         var LatLng=new google.maps.LatLng( pt.lat, pt.lng );
         pt.marker =  new google.maps.Marker({
           position: LatLng,
-          map: this.map.map, 
+          map: this.map, 
         	title: pt.name,
         	icon: iconurl
         });
@@ -240,7 +235,7 @@ Map.prototype.addCatch = function(pt) {
 				
         new google.maps.Marker({
           position: LatLng,
-          map: this.map.map, 
+          map: this.map, 
         	title: pkm,
         	icon: `./assets/pokemon_small/${pt.id}.png`,
         });
@@ -268,7 +263,7 @@ Map.prototype.addVisitedPokestop = function(pt) {
 				var LatLng=new google.maps.LatLng( pt.lat, pt.lng );	
         pt.marker = new google.maps.Marker({
           position: LatLng,
-          map: this.map.map, 
+          map: this.map, 
         	title: pt.name,
         	icon: './assets/img/pokestop_cooldown.png'
         });
@@ -325,7 +320,7 @@ Map.prototype.addPokestops = function(forts) {
         	 	  pt.name="Unknow";
         		pt.marker = new google.maps.Marker({
           	  position: LatLng,
-          		map: this.map.map, 
+          		map: this.map, 
         			title: pt.name,
         			icon: `./assets/img/${icon}.png`        			
         		});

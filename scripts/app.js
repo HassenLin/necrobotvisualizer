@@ -100,7 +100,7 @@
             var name = inventoryService.getPokemonName(selected.pokemonId);
             var msg = `Are you sure you want to transfer this ${name}? <br /> You will have <b>${left}</b> left.`;
             confirmAndSendToServer(msg, () => {
-                ga("send", "event", "transfer", name);
+                //ga("send", "event", "transfer", name);
                 wssend({
                     Command: "TransferPokemon",
                     PokemonId: id,
@@ -120,7 +120,7 @@
             var name = inventoryService.getPokemonName(selected.pokemonId);
             var msg = `Are you sure you want to evolve this ${name}? <br /> You will have <b>${left}</b> left.`;
             confirmAndSendToServer(msg, () => {
-                ga("send", "event", "evolve", name);
+                //ga("send", "event", "evolve", name);
                 wssend({
                     Command: "EvolvePokemon",
                     PokemonId: id,
@@ -138,7 +138,7 @@
             var selected = global.map.pokemonList[idx];
             selected.favorite = !selected.favorite;
             var name = inventoryService.getPokemonName(selected.pokemonId);
-            ga("send", "event", "favorite", name);
+            //ga("send", "event", "favorite", name);
             $(this).find("img").attr('src', `./assets/img/favorite_${selected.favorite ? 'set' : 'unset'}.png`);
             parent.find(".transferAction").toggleClass("hide");
             wssend({
@@ -165,7 +165,7 @@
                 callback: (value) => {
                     if(value) {
                         var drop = parseInt(value.count);
-                        ga("send", "event", "drop_items", name);
+                        //ga("send", "event", "drop_items", name);
                         wssend({
                             Command: "DropItem",
                             ItemId: itemId,

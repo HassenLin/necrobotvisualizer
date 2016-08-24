@@ -166,7 +166,7 @@ Map.prototype.initCatches = function() {
           position: LatLng,
         	map: this.map.map, 
         	title: pkm,
-        	icon: `./assets/pokemon/${pt.id}.png`
+        	icon: `./assets/pokemon_small/${pt.id}.png`
         });
         if(global.config.showStreetView)
         {
@@ -242,7 +242,7 @@ Map.prototype.addCatch = function(pt) {
           position: LatLng,
           map: this.map.map, 
         	title: pkm,
-        	icon: `./assets/pokemon/${pt.id}.png`,
+        	icon: `./assets/pokemon_small/${pt.id}.png`,
         });
         if(global.config.showStreetView)
         {

@@ -19,5 +19,6 @@ You can also choose local for Pokemon name display.
 
 ## Run from Code
  1. Download Zip.
- 2. Double Chick Index.html
+ 2. Turn on Websocket on Necrobot.
+ 3. Double Chick Index.html
  

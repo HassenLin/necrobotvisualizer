@@ -24,13 +24,10 @@ Map.prototype.setGMapPosition = function(nowLat,nowLng) {
           el:  '#'+this.mapDivStr,
         	lat: nowLat,
           lng : nowLng,
-          zoom: 16
+          zoom: 18,
+          streetViewControl : false          
         });
-		this.streetview = this.map.createPanorama({
-        	el:  '#'+this.streetViewDivStr,
-          lat: nowLat,
-          lng: nowLng,
-        });
+		this.map.map.addListener('dblclick',this.setDestination); 
   	this.flightPolyline= new google.maps.Polyline({
         	geodesic: true,
         	strokeColor: '#131540',
@@ -44,6 +41,7 @@ Map.prototype.setGMapPosition = function(nowLat,nowLng) {
           lat: nowLat,
           lng: nowLng,
         	title: 'Player',
+        	zIndex: google.maps.Marker.MAX_ZINDEX + 1,
         	icon: './assets/img/Poke_Ball.png',
         	details: {
           	database_id: 42,
@@ -61,15 +59,18 @@ Map.prototype.setGMapPosition = function(nowLat,nowLng) {
         });  
 	    if(global.config.showStreetView)
   	  {      	
-      	this.me.setVisible(false);            
+  	  	this.streetview = this.map.createPanorama({
+        	el:  '#'+this.streetViewDivStr,
+          lat: nowLat,
+          lng: nowLng,
+        });
+    		this.map.map.setStreetView(this.streetview);      
       	google.maps.event.trigger(this.map.map, "resize");
     	}
   		else
     	{
     		$("#streetview").hide();
-      	this.divMap.style.height="100%";
-      	this.streetview.setVisible(false);            
-      	this.me.setVisible(true);
+      	this.divMap.style.width="100%";
       	google.maps.event.trigger(this.map.map, "resize");
     	}
   }
@@ -79,6 +80,7 @@ Map.prototype.setGMapPosition = function(nowLat,nowLng) {
   	if(global.config.followPlayer)
     	this.map.panTo(LatLng);
     this.flightPath.push(LatLng);
+   	this.me.setPosition(LatLng);
     
     if(global.config.showStreetView)
     {
@@ -86,10 +88,6 @@ Map.prototype.setGMapPosition = function(nowLat,nowLng) {
     	this.streetview.setVisible(true);
 
     }
-  	else
-    {
-    	this.me.setPosition(LatLng);
-    } 
   }
   
 };
@@ -99,6 +97,7 @@ Map.prototype.saveContext = function() {
             id: p.id,
             lat: p.lat,
             lng: p.lng,
+            name: p.name,
             visited: p.visited
         }
     });
@@ -158,16 +157,26 @@ Map.prototype.initPath = function() {
 Map.prototype.initCatches = function() {
     for (var i = 0; i < this.catches.length; i++) {
         var pt = this.catches[i];
-        var pkm = `${pt.name} <br /> Cp:${pt.cp} Iv:${pt.iv}%`;
+        var pkm = `${pt.name} \n Cp:${pt.cp} Iv:${pt.iv}%`;
         if (pt.lvl) {
-            pkm = `${pt.name} (lvl ${pt.lvl}) <br /> Cp:${pt.cp} Iv:${pt.iv}%`;
+            pkm = `${pt.name} (lvl ${pt.lvl}) \n Cp:${pt.cp} Iv:${pt.iv}%`;
         }
-        this.map.addMarker({
-          lat: pt.lat,
-          lng: pt.lng,
+        var LatLng=new google.maps.LatLng( pt.lat, pt.lng );
+        new google.maps.Marker({
+          position: LatLng,
+        	map: this.map.map, 
         	title: pkm,
         	icon: `./assets/pokemon/${pt.id}.png`
         });
+        if(global.config.showStreetView)
+        {
+        	new google.maps.Marker({
+	          position: LatLng,
+	          map: this.streetview,
+	        	title: pkm,
+	        	icon: `./assets/pokemon/${pt.id}.png`
+          });
+        }
     }
 }
 
@@ -175,12 +184,22 @@ Map.prototype.initPokestops = function() {
     for (var i = 0; i < this.pokestops.length; i++) {
         var pt = this.pokestops[i];
         var iconurl = pt.visited  ? `./assets/img/pokestop_visited.png` : `./assets/img/pokestop_available.png`;
-        pt.marker =  this.map.addMarker({
-          lat: pt.lat,
-          lng: pt.lng,
+        var LatLng=new google.maps.LatLng( pt.lat, pt.lng );
+        pt.marker =  new google.maps.Marker({
+          position: LatLng,
+          map: this.map.map, 
         	title: pt.name,
         	icon: iconurl
         });
+ 				if(global.config.showStreetView)
+        {
+        	pt.marker2=new google.maps.Marker({
+	          position: LatLng,
+	          map: this.streetview,
+	        	title: pt.name,
+	        	icon: iconurl
+          });
+        }        
     }
 }
 
@@ -195,7 +214,7 @@ Map.prototype.addToPath = function(pt) {
 }
 
 Map.prototype.addCatch = function(pt) {
-	console.log("addCatch");
+
     if (!pt.lat) {
         if (this.steps.length <= 0) return;
         var last = this.steps[this.steps.length - 1];
@@ -203,9 +222,9 @@ Map.prototype.addCatch = function(pt) {
         pt.lng = last.lng;
     }
 
-    var pkm = `${pt.name}<br /> CP:${pt.cp} IV:${pt.iv}%`;
+    var pkm = `${pt.name}\n CP:${pt.cp} IV:${pt.iv}%`;
     if (pt.lvl) {
-        pkm = `${pt.name} (lvl ${pt.lvl}) <br /> Cp:${pt.cp} Iv:${pt.iv}%`;
+        pkm = `${pt.name} (lvl ${pt.lvl}) \n Cp:${pt.cp} Iv:${pt.iv}%`;
     }
 
     this.catches.push(pt);
@@ -217,18 +236,23 @@ Map.prototype.addCatch = function(pt) {
         //this.layerCatches.clearLayers();
         this.initCatches();
     } else {
-        this.map.addMarker({
-          lat: pt.lat,
-          lng: pt.lng,
-        	title: pkm,
-        	icon: `./assets/pokemon/${pt.id}.png`
-        });
+				var LatLng=new google.maps.LatLng( pt.lat, pt.lng );
+				
         new google.maps.Marker({
-  				position: new google.maps.LatLng( pt.lat, pt.lng ),
-  				map: this.streetview, // your code doesn't have a 'map' variable
-  				icon: `./assets/pokemon/${pt.id}.png`,
-  				title: pkm
-				});
+          position: LatLng,
+          map: this.map.map, 
+        	title: pkm,
+        	icon: `./assets/pokemon/${pt.id}.png`,
+        });
+        if(global.config.showStreetView)
+        {
+        	new google.maps.Marker({
+	          position: LatLng,
+	          map: this.streetview,
+	        	title: pkm,
+        	  icon: `./assets/pokemon/${pt.id}.png`
+          });
+        } 
     }
 }
 
@@ -241,18 +265,22 @@ Map.prototype.addVisitedPokestop = function(pt) {
         ps = pt;
         if(this.map==null)
 					this.setGMapPosition(pt.lat,pt.lng);
-        pt.marker = this.map.addMarker({
-          lat: pt.lat,
-          lng: pt.lng,
+				var LatLng=new google.maps.LatLng( pt.lat, pt.lng );	
+        pt.marker = new google.maps.Marker({
+          position: LatLng,
+          map: this.map.map, 
         	title: pt.name,
         	icon: './assets/img/pokestop_cooldown.png'
         });
-        pt.marker2=new google.maps.Marker({
-  				position: new google.maps.LatLng( pt.lat, pt.lng ),
-  				map: this.streetview, // your code doesn't have a 'map' variable
-  				icon: './assets/img/pokestop_cooldown.png',
-  				title: pkm
-				});
+        if(global.config.showStreetView)
+        {
+        	pt.marker2 = new google.maps.Marker({
+	          position: LatLng,
+	          map: this.streetview,
+	        	title: pt.name,
+        	  icon: './assets/img/pokestop_cooldown.png'
+          });
+        } 
 
     } else {
         Object.assign(ps, pt);
@@ -261,7 +289,14 @@ Map.prototype.addVisitedPokestop = function(pt) {
     ps.visited = true;
     if (ps && ps.marker) {
         ps.marker.setIcon(`./assets/img/pokestop_cooldown.png`);        
-        pt.marker2.setIcon(`./assets/img/pokestop_cooldown.png`);        
+        if(global.config.showStreetView)
+           ps.marker2.setIcon(`./assets/img/pokestop_cooldown.png`);        
+        if (ps.name)
+        {
+        	ps.marker.setTitle(ps.name);
+        	if(global.config.showStreetView)
+        	  ps.marker2.setTitle(ps.name);
+        }
     }
 }
 
@@ -283,23 +318,30 @@ Map.prototype.addPokestops = function(forts) {
         }
 
         if (!pt.marker) {
-        			if(this.map==null)
-								this.setGMapPosition(pt.lat,pt.lng);
-        	   pt.marker = this.map.addMarker({
-          		lat: pt.lat,
-          		lng: pt.lng,
+        		if(this.map==null)
+							this.setGMapPosition(pt.lat,pt.lng);
+        	 	var LatLng=new google.maps.LatLng( pt.lat, pt.lng );	
+        	 	if(!pt.name)
+        	 	  pt.name="Unknow";
+        		pt.marker = new google.maps.Marker({
+          	  position: LatLng,
+          		map: this.map.map, 
         			title: pt.name,
-        			icon: `./assets/img/${icon}.png`
+        			icon: `./assets/img/${icon}.png`        			
         		});
-        		pt.marker2=new google.maps.Marker({
-  						position: new google.maps.LatLng( pt.lat, pt.lng ),
-  						map: this.streetview, // your code doesn't have a 'map' variable
-  						icon: `./assets/img/${icon}.png`,
-  						title: pt.name
-						});
+        		if(global.config.showStreetView)
+        		{
+        			pt.marker2 = new google.maps.Marker({
+	          		position: LatLng,
+	         			map: this.streetview,
+	        			title: pt.name,
+        		  	icon: `./assets/img/${icon}.png`
+          		});
+        		} 
         } else {
             pt.marker.setIcon(`./assets/img/${icon}.png`);
-            pt.marker2.setIcon(`./assets/img/${icon}.png`);
+            if(global.config.showStreetView)
+            	pt.marker2.setIcon(`./assets/img/${icon}.png`);
         }
     }
 
@@ -329,7 +371,8 @@ Map.prototype.updatePokestopsStatus = function() {
                 icon = "pokestop_visited";
             }
             pt.marker.setIcon(`./assets/img/${icon}.png`);
-            pt.marker2.setIcon(`./assets/img/${icon}.png`);
+            if(global.config.showStreetView)
+              pt.marker2.setIcon(`./assets/img/${icon}.png`);
         }
     });
 }
@@ -447,31 +490,30 @@ Map.prototype.displayInventory = function(items) {
     $(".inventory").show().addClass("active");
 };
 
-Map.prototype.setDestination = function(latlng) {
-    var popup = L.popup().setLatLng(latlng)
-                 .setContent(`<div class='dest'>${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}</div><div class="center-align"><a class="destBtn waves-effect waves-light btn">Go?</a></div>`)
-                 .openOn(this.map);
+Map.prototype.setDestination = function(e){
 
-    $(".destBtn").click((function() {
-        this.map.closePopup(popup);
-        console.log(`Set destination: ${latlng.lat}, ${latlng.lng}`);
-        if (this.destination) {
-           // this.layerPath.removeLayer(this.destination);
-        }
+		console.log(`Set destination: ${e.latLng.lat}, ${e.latLng.lng}`);
+		if (this.destination) {
+   		this.destination.setMap(null);
+		}
 
-        this.destination = this.map.addMarker({
-          lat: latlng.lat,
-          lng: latlng.lng,
-        	title: `${latlng.lat}, ${latlng.lng}`,
-        	icon: 'assets/img/marker-icon-red.png'
-        });
-        global.ws.emit("set_destination", latlng);
-    }).bind(this));
-}
-
+	 this.destination = new google.maps.Marker({
+      position: e.latLng,
+    	map: this, 
+			title: 'destination',
+			icon: 'assets/img/marker-icon-red.png'
+		});
+		this.destination.setMap(this);
+		wssend({
+            Command: "set_destination",
+            lat: e.latLng.lat,
+            lng: e.latLng.lng
+           });
+};
 Map.prototype.manualDestinationReached = function() {
+		this.destination.setMap(null);
     this.destination = null;
-}
+};
 
 
 

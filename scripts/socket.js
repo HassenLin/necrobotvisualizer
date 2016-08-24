@@ -154,6 +154,8 @@ function listenToWebSocket() {
             var json = "[" + msg.StringifiedPath + "]";
             json = json.replace(/lat/g, '"lat"').replace(/lng/g, '"lng"');
             global.map.setRoute(JSON.parse(json));
+        } else if (command.indexOf("set_destination") >= 0) {
+            global.map.manualDestinationReached()
         } else if (command.indexOf("TransferPokemonEvent") >= 0) {
             // nothing
         } else if (command.indexOf("FortTargetEvent") >= 0) {

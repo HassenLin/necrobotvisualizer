@@ -43,17 +43,13 @@ Map.prototype.setGMapPosition = function(nowLat,nowLng) {
         	details: {
           	database_id: 42,
           	author: 'Hassen'
-          },
-        	click: function(e){
-          	if(console.log)
-            	console.log(e);
-          	alert('You clicked in this marker');
-          },
-          mouseover: function(e){
-          if(console.log)
-           console.log(e);
           }
         });  
+      this.me.addListener('click',function(e){
+          	global.ws.send('{"Command":"GetTrainerProfile","RequestID":"1"}');
+          });   
+      this.me.addListener('mouseover',function(e){
+          });   
 	    if(global.config.showStreetView)
   	  {      	
   	  	this.streetview = new google.maps.StreetViewPanorama(this.divStreetView,{
@@ -123,7 +119,6 @@ Map.prototype.loadContext = function() {
 }
 
 Map.prototype.initPath = function() {
-		   console.log("initPath");
     var last = this.steps[this.steps.length - 1];
     this.setGMapPosition(last.lat,last.lng);
     
@@ -487,7 +482,8 @@ Map.prototype.displayInventory = function(items) {
 
 Map.prototype.setDestination = function(e){
 
-		console.log(`Set destination: ${e.latLng.lat}, ${e.latLng.lng}`);
+    var lat=e.latLng.lat(),lng=e.latLng.lng();
+		console.log('Set destination:'+lat.toString()+","+lng.toString());
 		if (this.destination) {
    		this.destination.setMap(null);
 		}
@@ -499,11 +495,10 @@ Map.prototype.setDestination = function(e){
 			icon: 'assets/img/marker-icon-red.png'
 		});
 		this.destination.setMap(this);
-		wssend({
-            Command: "set_destination",
-            lat: e.latLng.lat,
-            lng: e.latLng.lng
-           });
+		global.ws.send(JSON.stringify({
+				lat:lat.toString,
+				lng:lng
+				}));
 };
 Map.prototype.manualDestinationReached = function() {
 		this.destination.setMap(null);

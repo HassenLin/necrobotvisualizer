@@ -134,7 +134,6 @@ function listenToWebSocket() {
             eggs = incubators.concat(eggs).filter(e => e);
             global.map.displayEggsList(eggs);
         } else if (command.indexOf("InventoryListEvent") >= 0) {
-            console.log(msg);
             var items = Array.from(msg.Items.$values, item => {
                 return {
                     name: inventory.getItemName(item.ItemId),
@@ -150,6 +149,31 @@ function listenToWebSocket() {
                 name: inventory.getPokemonName(msg.Id)
             };
             pokemonToast(pkm, { title: "A Pokemon Evolved" });
+        } else if (command.indexOf("TrainerProfile") >= 0) {    
+						    if (global.config.noPopup) return;
+						
+						    var title =  msg.Data.Profile.Username;
+						    var toast = toastr.info;
+
+						    Trainerinfo = `lvl ${msg.Data.Stats.Level} (${msg.Data.Stats.Experience}/${msg.Data.Stats.NextLevelXp}) `;
+						
+						    var content = `<div>${Trainerinfo}</div><div>`;
+						    content += `BattleAttackTotal : ${msg.Data.Stats.BattleAttackTotal} <br />`;
+						    content += `BattleDefendedWon : ${msg.Data.Stats.BattleDefendedWon} <br />`;
+						    content += `BattleTrainingTotal : ${msg.Data.Stats.BattleTrainingTotal} <br />`;
+						    content += `BattleTrainingWon : ${msg.Data.Stats.BattleTrainingWon} <br />`;
+						    content += `BattleAttackTotal : ${msg.Data.Stats.BattleAttackTotal} <br />`;						    
+						    content += `EggsHatched : ${msg.Data.Stats.EggsHatched} <br />`;
+						    content += `Evolutions : ${msg.Data.Stats.Evolutions} <br />`;						    
+						    content += `Walked : ${msg.Data.Stats.KmWalked} km <br />`;
+						    content += `Captured :${(msg.Data.Stats.PokemonsCaptured/msg.Data.Stats.PokemonsEncountered).toFixed(2)} (${msg.Data.Stats.PokemonsCaptured}/${msg.Data.Stats.PokemonsEncountered}) <br />`;
+						    content += `</div>`;
+						    toast(content, title, {
+						        "progressBar": true,
+						        "positionClass": "toast-bottom-left",
+						        "timeOut": "10000",
+						        "closeButton": true
+						    })
         } else if (command.indexOf("PathEvent") >= 0) {
             var json = "[" + msg.StringifiedPath + "]";
             json = json.replace(/lat/g, '"lat"').replace(/lng/g, '"lng"');
@@ -179,6 +203,8 @@ function listenToWebSocket() {
         } else if (command.indexOf("HumanWalkingEvent") >= 0) {
             // nothing
         } else if (command.indexOf("UnaccurateLocation") >= 0) {
+            // nothing 
+        } else if (command.indexOf("UseBerryEvent") >= 0) {
             // nothing
         } else if (command.indexOf("ErrorEvent") >= 0) {
             console.log(msg.Message);

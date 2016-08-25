@@ -158,15 +158,28 @@ function listenToWebSocket() {
 						    Trainerinfo = `lvl ${msg.Data.Stats.Level} (${msg.Data.Stats.Experience}/${msg.Data.Stats.NextLevelXp}) `;
 						
 						    var content = `<div>${Trainerinfo}</div><div>`;
-						    content += `BattleAttackTotal : ${msg.Data.Stats.BattleAttackTotal} <br />`;
-						    content += `BattleDefendedWon : ${msg.Data.Stats.BattleDefendedWon} <br />`;
-						    content += `BattleTrainingTotal : ${msg.Data.Stats.BattleTrainingTotal} <br />`;
-						    content += `BattleTrainingWon : ${msg.Data.Stats.BattleTrainingWon} <br />`;
-						    content += `BattleAttackTotal : ${msg.Data.Stats.BattleAttackTotal} <br />`;						    
-						    content += `EggsHatched : ${msg.Data.Stats.EggsHatched} <br />`;
-						    content += `Evolutions : ${msg.Data.Stats.Evolutions} <br />`;						    
-						    content += `Walked : ${msg.Data.Stats.KmWalked} km <br />`;
-						    content += `Captured :${(msg.Data.Stats.PokemonsCaptured/msg.Data.Stats.PokemonsEncountered).toFixed(2)} (${msg.Data.Stats.PokemonsCaptured}/${msg.Data.Stats.PokemonsEncountered}) <br />`;
+						    if(global.config.locale=='en')
+						    {
+							    content += `Battle Attack Total : ${msg.Data.Stats.BattleAttackTotal} <br />`;
+							    content += `Battle Defended Won : ${msg.Data.Stats.BattleDefendedWon} <br />`;							    
+							    content += `Battle Training Won : ${msg.Data.Stats.BattleTrainingWon} <br />`;
+							    content += `Battle Attack Total : ${msg.Data.Stats.BattleAttackTotal} <br />`;						    
+							    content += `Eggs Hatched : ${msg.Data.Stats.EggsHatched} <br />`;
+							    content += `Evolutions : ${msg.Data.Stats.Evolutions} <br />`;						    
+							    content += `Walked : ${msg.Data.Stats.KmWalked} km <br />`;
+							    content += `Captured Rate:${(msg.Data.Stats.PokemonsCaptured/msg.Data.Stats.PokemonsEncountered).toFixed(2)}% (${msg.Data.Stats.PokemonsCaptured}/${msg.Data.Stats.PokemonsEncountered}) <br />`;
+						    }
+						    if(global.config.locale=='tw')
+						    {
+							    content += `道館戰鬥次數 : ${msg.Data.Stats.BattleAttackTotal} <br />`;
+							    content += `道館防禦勝利次數 : ${msg.Data.Stats.BattleDefendedWon} <br />`;
+							    content += `道館修練次數 : ${msg.Data.Stats.BattleTrainingTotal} <br />`;
+							    content += `道館修練勝利次數 : ${msg.Data.Stats.BattleTrainingWon} <br />`;							    				    
+							    content += `孵蛋次數 : ${msg.Data.Stats.EggsHatched} <br />`;
+							    content += `進化次數 : ${msg.Data.Stats.Evolutions} <br />`;						    
+							    content += `行走距離 : ${msg.Data.Stats.KmWalked} km <br />`;
+							    content += `抓取率 :${(msg.Data.Stats.PokemonsCaptured/msg.Data.Stats.PokemonsEncountered).toFixed(2)}% (${msg.Data.Stats.PokemonsCaptured}/${msg.Data.Stats.PokemonsEncountered}) <br />`;
+						    }
 						    content += `</div>`;
 						    toast(content, title, {
 						        "progressBar": true,

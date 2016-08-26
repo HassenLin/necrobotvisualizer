@@ -33,7 +33,6 @@ Map.prototype.setGMapPosition = function(nowLat,nowLng) {
         });
     this.flightPolyline.setMap(this.map);
     this.flightPath = this.flightPolyline.getPath();
-		this.flightPath.push(LatLng);
     this.me = new google.maps.Marker({
           position: LatLng,
         	title: 'Player',

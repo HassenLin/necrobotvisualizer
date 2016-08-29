@@ -6,6 +6,15 @@ Clone necrobotvisualizer from https://github.com/nicoschmitt/necrobotvisualizer
 You have to be up to date on the bot side (master or maybe latest release).  
 In the Visualizer, the url on the config page should match the port you configured on bot side (both have the same default).
 
+## New
+   Add On Line version, use Necrobot Visualizer whithout download.
+   The website only 100% github source, whithout any extenral code. 
+   http://hassenlin.byethost12.com/
+  
+   Support double click version necrobot.exe (0.9.6.1)
+   binary on https://github.com/HassenLin/NecroBot/files/441669/NecroBot.zip
+   source code on https://github.com/HassenLin/NecroBot
+
 ## Install 
    Select Download as zip and decompress zip file.
 

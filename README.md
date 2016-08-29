@@ -38,7 +38,7 @@ You can also choose local for Pokemon name display.
 我改了一個necrobot visualizer使用google map 線上版。
 用Chrome Browser就能跑，不用下載node.js等好大一坨。
 設定方法跟necrobot visualizer是一樣的喔。
-也可以離線不用下載使用喔。
+也可以離線下載使用喔。
 
 直接使用:http://hassenlin.byethost12.com/
 網站: https://github.com/HassenLin/necrobotvisualizer

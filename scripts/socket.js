@@ -160,25 +160,25 @@ function listenToWebSocket() {
 						    var content = `<div>${Trainerinfo}</div><div>`;
 						    if(global.config.locale=='en')
 						    {
-							    content += `Battle Attack Total : ${msg.Data.Stats.BattleAttackTotal} <br />`;
-							    content += `Battle Defended Won : ${msg.Data.Stats.BattleDefendedWon} <br />`;							    
-							    content += `Battle Training Won : ${msg.Data.Stats.BattleTrainingWon} <br />`;
-							    content += `Battle Attack Total : ${msg.Data.Stats.BattleAttackTotal} <br />`;						    
-							    content += `Eggs Hatched : ${msg.Data.Stats.EggsHatched} <br />`;
-							    content += `Evolutions : ${msg.Data.Stats.Evolutions} <br />`;						    
-							    content += `Walked : ${msg.Data.Stats.KmWalked} km <br />`;
-							    content += `Captured Rate:${(msg.Data.Stats.PokemonsCaptured/msg.Data.Stats.PokemonsEncountered).toFixed(2)}% (${msg.Data.Stats.PokemonsCaptured}/${msg.Data.Stats.PokemonsEncountered}) <br />`;
+						    	content += `Poke Coin: ${msg.Data.Profile.Currencies.$values[0].Amount} `;
+						    	content += `Stardust: ${msg.Data.Profile.Currencies.$values[1].Amount} <br />`;
+							    content += `Battle: ${msg.Data.Stats.BattleAttackTotal} Won:${msg.Data.Stats.BattleAttackWon} Defended: ${msg.Data.Stats.BattleDefendedWon}<br />`;
+							    content += `Training: ${msg.Data.Stats.BattleTrainingTotal} Won:Training: ${msg.Data.Stats.BattleTrainingWon}<br />`;
+							    content += `Eggs Hatched: ${msg.Data.Stats.EggsHatched} <br />`;
+							    content += `Evolutions: ${msg.Data.Stats.Evolutions} <br />`;						    
+							    content += `Walked: ${msg.Data.Stats.KmWalked} km <br />`;
+							    content += `Captured:${(msg.Data.Stats.PokemonsCaptured/msg.Data.Stats.PokemonsEncountered*100).toFixed(2)}% (${msg.Data.Stats.PokemonsCaptured}/${msg.Data.Stats.PokemonsEncountered}) <br />`;
 						    }
 						    if(global.config.locale=='tw')
 						    {
-							    content += `道館戰鬥次數 : ${msg.Data.Stats.BattleAttackTotal} <br />`;
-							    content += `道館防禦勝利次數 : ${msg.Data.Stats.BattleDefendedWon} <br />`;
-							    content += `道館修練次數 : ${msg.Data.Stats.BattleTrainingTotal} <br />`;
-							    content += `道館修練勝利次數 : ${msg.Data.Stats.BattleTrainingWon} <br />`;							    				    
-							    content += `孵蛋次數 : ${msg.Data.Stats.EggsHatched} <br />`;
-							    content += `進化次數 : ${msg.Data.Stats.Evolutions} <br />`;						    
-							    content += `行走距離 : ${msg.Data.Stats.KmWalked} km <br />`;
-							    content += `抓取率 :${(msg.Data.Stats.PokemonsCaptured/msg.Data.Stats.PokemonsEncountered).toFixed(2)}% (${msg.Data.Stats.PokemonsCaptured}/${msg.Data.Stats.PokemonsEncountered}) <br />`;
+						    	content += `金幣: ${msg.Data.Profile.Currencies.$values[0].Amount} `;
+						    	content += `星塵: ${msg.Data.Profile.Currencies.$values[1].Amount} <br />`;
+							    content += `戰鬥: ${msg.Data.Stats.BattleAttackTotal} 勝利:${msg.Data.Stats.BattleAttackWon} 已防禦: ${msg.Data.Stats.BattleDefendedWon}<br />`;
+							    content += `修練: ${msg.Data.Stats.BattleTrainingTotal} 勝利: ${msg.Data.Stats.BattleTrainingWon}<br />`;					    				    
+							    content += `孵蛋次數: ${msg.Data.Stats.EggsHatched} <br />`;
+							    content += `進化次數: ${msg.Data.Stats.Evolutions} <br />`;						    
+							    content += `行走距離: ${msg.Data.Stats.KmWalked} km <br />`;
+							    content += `抓取率:${(msg.Data.Stats.PokemonsCaptured/msg.Data.Stats.PokemonsEncountered*100).toFixed(2)}% (${msg.Data.Stats.PokemonsCaptured}/${msg.Data.Stats.PokemonsEncountered}) <br />`;
 						    }
 						    content += `</div>`;
 						    toast(content, title, {

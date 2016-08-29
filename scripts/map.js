@@ -494,10 +494,13 @@ Map.prototype.setDestination = function(e){
 			icon: 'assets/img/marker-icon-red.png'
 		});
 		this.destination.setMap(this);
-		global.ws.send(JSON.stringify({
-				lat:lat.toString,
+		global.ws.send(JSON.stringify(
+			{
+				Command:"SetDestination",
+				RequestID:"1",
+				lat:lat,
 				lng:lng
-				}));
+			}));
 };
 Map.prototype.manualDestinationReached = function() {
 		this.destination.setMap(null);

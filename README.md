@@ -53,13 +53,14 @@ You can also choose local for Pokemon name display.
 3.語言輸入 zh-TW , 然後設定帳號密碼
 
    記得地點要設台灣,這點很重要
+   
 4.關閉 necrobot.exe
 
-5. 修改 Config 目錄裡面的 config.json 第14行
+5.修改 Config 目錄裡面的 config.json 第14行
 
-"UseWebsocket": true,
+	"UseWebsocket": true,
 
-6. 啟動necrobot.exe
+6.啟動necrobot.exe
 
  
 ![Screenshot](https://github.com/HassenLin/necrobotvisualizer/blob/master/screenshots/screenshot1.png?raw=true)  

@@ -6,6 +6,7 @@ var Map = function(mapDiv,streetViewDiv) {
     this.map = null;    
         
     this.destination = null;
+    this.destinationLatLng = null;
 
     this.steps = [];
     this.catches = [];
@@ -22,9 +23,9 @@ Map.prototype.setGMapPosition = function(nowLat,nowLng) {
 		this.map = new google.maps.Map(this.divMap,{
 			center:LatLng,
       zoom: 18,
-      scaleControl : true,
       streetViewControl : false          
     });
+    this.map.owner = this;
 		this.map.addListener('dblclick',this.setDestination); 
   	this.flightPolyline= new google.maps.Polyline({
         	geodesic: true,
@@ -96,6 +97,8 @@ Map.prototype.saveContext = function() {
     sessionStorage.setItem("available", true);
     sessionStorage.setItem("steps", JSON.stringify(this.steps));
     sessionStorage.setItem("catches", JSON.stringify(this.catches));
+    if(this.destinationLatLng != null)
+    	sessionStorage.setItem("UserDestination", JSON.stringify(this.destinationLatLng));
     sessionStorage.setItem("pokestops", JSON.stringify(stops));
 }
 
@@ -106,6 +109,8 @@ Map.prototype.loadContext = function() {
 
             this.steps = JSON.parse(sessionStorage.getItem("steps")) || [];
             this.catches = JSON.parse(sessionStorage.getItem("catches")) || [];
+            this.destinationLatLng = JSON.parse(sessionStorage.getItem("UserDestination"));
+
             this.pokestops = JSON.parse(sessionStorage.getItem("pokestops")) || [];
 
             if (this.steps.length > 0) this.initPath();
@@ -121,6 +126,21 @@ Map.prototype.loadContext = function() {
 Map.prototype.initPath = function() {
     var last = this.steps[this.steps.length - 1];
     this.setGMapPosition(last.lat,last.lng);
+
+		if(this.destinationLatLng!=null)
+		{
+			if (this.destination) {
+   			this.destination.setMap(null);
+			}
+
+	 		this.destination = new google.maps.Marker({
+      	position: new google.maps.LatLng( this.destinationLatLng.lat, this.destinationLatLng.lng ),
+    		map: this.map, 
+				title: 'destination',
+				icon: 'assets/img/marker-icon-red.png'
+			});
+			this.destination.setMap(this.map);
+    }
     
     
     this.flightPolyline.setMap(null);
@@ -484,17 +504,21 @@ Map.prototype.setDestination = function(e){
 
     var lat=e.latLng.lat(),lng=e.latLng.lng();
 		console.log('Set destination:'+lat.toString()+","+lng.toString());
-		if (this.destination) {
-   		this.destination.setMap(null);
+		this.owner.destinationLatLng = {
+			lat:lat,
+			lng:lng
+		};
+		if (this.owner.destination) {
+   		this.owner.destination.setMap(null);
 		}
 
-	 this.destination = new google.maps.Marker({
+	 this.owner.destination = new google.maps.Marker({
       position: e.latLng,
     	map: this, 
 			title: 'destination',
 			icon: 'assets/img/marker-icon-red.png'
 		});
-		this.destination.setMap(this);
+		this.owner.destination.setMap(this);
 		global.ws.send(JSON.stringify(
 			{
 				Command:"SetDestination",
@@ -504,8 +528,8 @@ Map.prototype.setDestination = function(e){
 			}));
 };
 Map.prototype.manualDestinationReached = function() {
-		this.destination.setMap(null);
-    this.destination = null;
+		_self.destination.setMap(null);
+    _self.destination = null;
 };
 
 

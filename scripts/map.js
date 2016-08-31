@@ -23,6 +23,7 @@ Map.prototype.setGMapPosition = function(nowLat,nowLng) {
 		this.map = new google.maps.Map(this.divMap,{
 			center:LatLng,
       zoom: 18,
+      scaleControl: true,
       streetViewControl : false          
     });
     this.map.owner = this;

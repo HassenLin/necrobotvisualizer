@@ -85,7 +85,9 @@
             sessionStorage.setItem("available", false);
             window.location.reload();
         });
-
+				$("#followPlayerLink").click(() => {
+            global.config.followPlayer = !global.config.followPlayer;
+        });
         $("#settingsLink").click(() => {
             global.map.saveContext();
             window.location = "config.html";

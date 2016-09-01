@@ -29,10 +29,10 @@
 
             appconfig.locale = $("#slLocale").val() || "en";
             appconfig.websocket = $("#txtWebSocket").val();
-            appconfig.followPlayer = $("#chkFollowPlayer").prop("checked") || false;
+            //appconfig.followPlayer = $("#chkFollowPlayer").prop("checked") || false;
             appconfig.noPopup = $("#chkNoPopup").prop("checked") || false;
             appconfig.noConfirm = $("#chkNoConfirm").prop("checked") || false;
-            appconfig.showStreetView = $("#chkStreetView").prop("checked") || false;
+            //appconfig.showStreetView = $("#chkStreetView").prop("checked") || false;
 
             window.configService.save(appconfig);
             navigateAway();
@@ -45,10 +45,10 @@
         $(function() {
             $("#slLocale").val(appconfig.locale);
             $("#txtWebSocket").val(appconfig.websocket);
-            $("#chkFollowPlayer").prop('checked', appconfig.followPlayer || false);
+            //$("#chkFollowPlayer").prop('checked', appconfig.followPlayer || false);
             $("#chkNoPopup").prop('checked', appconfig.noPopup || false);
             $("#chkNoConfirm").prop('checked', appconfig.noConfirm || false);
-            $("#chkStreetView").prop('checked', appconfig.showStreetView || false);
+            //$("#chkStreetView").prop('checked', appconfig.showStreetView || false);
 
             $("#saveBtn").click(saveConfig);
             $("#cancelBtn").click(navigateAway);
@@ -78,10 +78,10 @@
                     <div class="col s12">
                         <h5>Options</h5>
                         <div class="row">
-                            <div class="input-field col s12">
+                            <!-- div class="input-field col s12" >
                                 <input type="checkbox" id="chkFollowPlayer" class="field-comon" />
                                 <label for="chkFollowPlayer">Follow player on map</label>
-                            </div>
+                            </div -->
                             <div class="input-field col s12">
                                 <input type="checkbox" id="chkNoPopup" class="field-comon" />
                                 <label for="chkNoPopup">Disable popups</label>
@@ -90,10 +90,10 @@
                                 <input type="checkbox" id="chkNoConfirm" class="field-comon" />
                                 <label for="chkNoConfirm">Don't show confirm dialog when transfer/evolve</label>
                             </div>
-                            <div class="input-field col s12">
+                            <!-- div class="input-field col s12">
                                 <input type="checkbox" id="chkStreetView" class="field-comon" />
                                 <label for="chkStreetView">Show Street View</label>
-                            </div>
+                            </div -->
                         </div>
                     </div>
                     <div class="col">

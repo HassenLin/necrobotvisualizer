@@ -32,7 +32,8 @@
     $(function() {
         var sortBy = localStorage.getItem("sortPokemonBy") || "cp";
         $("#sortBy" + sortBy).addClass("active").siblings().removeClass("active");
-
+				$("#followPlayerIcon").attr("src",global.config.followPlayer ? "./assets/img/footsteps-on.png" : "./assets/img/footsteps-off.png");
+				$("#streetviewIcon").attr("src",global.config.showStreetView ? "./assets/img/streetview-on.png" : "./assets/img/streetview-off.png");				
         $("#pokemonLink").click( function() {
             if ($(".inventory").css("opacity") == "1" && $(".inventory .data .pokemon").length) {
                 $(".inventory").removeClass("active");
@@ -87,7 +88,16 @@
         });
 				$("#followPlayerLink").click(() => {
             global.config.followPlayer = !global.config.followPlayer;
+						$("#followPlayerIcon").attr("src",global.config.followPlayer ? "./assets/img/footsteps-on.png" : "./assets/img/footsteps-off.png");
+            window.configService.save(global.config);
         });
+				$("#streetviewLink").click(() => {
+            global.config.showStreetView = !global.config.showStreetView;
+						$("#streetviewIcon").attr("src",global.config.showStreetView ? "./assets/img/streetview-on.png" : "./assets/img/streetview-off.png");				
+						window.configService.save(global.config);
+						global.map.drawStreetView();
+        });
+
         $("#settingsLink").click(() => {
             global.map.saveContext();
             window.location = "config.html";

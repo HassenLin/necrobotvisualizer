@@ -31,43 +31,22 @@
 
     var service = {};
 
-    if (typeof require === 'function') {
-        console.log("Load config from disk");
-
-        var path = require("path");
-        var fs = require("fs"); 
-        var { remote } = require("electron");
-
-        var configfile = path.join(remote.app.getPath("userData"), "settings.json");
-
-        const { version } = require("./package.json");
-
-        service.save = function(config) {
-            fs.writeFileSync(configfile, JSON.stringify(config));
-        }
-
-        service.load = function() {
-            var config =  Object.assign({}, defaultConfig);
-            try {
-                config = JSON.parse(fs.readFileSync(configfile, 'utf-8')); 
-                config = Object.assign({}, defaultConfig, config);
-                config.version = version;
-            } catch(err) {
-                configService.save(defaultConfig);
-                config =  Object.assign({}, defaultConfig);
-            }
-
-            return config;
-        }
-
-    } else {
+   
         console.log("Load config from storage");
         defaultConfig.websocket = "ws://localhost:14252";
 
         service.load = function() {
             var config = Object.assign({}, defaultConfig);
-            var json = localStorage.getItem("config");
-            if (json) Object.assign(config, JSON.parse(json));
+            
+            try
+            {
+            	var json = localStorage.getItem("config");
+            	if (json) 
+            		Object.assign(config, JSON.parse(json));
+            } 
+            catch (e) {
+            	console.log(e);
+            }
 
             var host = getURLParameter("websocket");
             if (host) config.websocket = host;
@@ -81,7 +60,7 @@
         service.save = function(config) {
             localStorage.setItem("config", JSON.stringify(config));
         }
-    }
+
 
     window.configService = service;
 

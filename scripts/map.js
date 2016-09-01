@@ -14,6 +14,7 @@ var Map = function(mapDiv,streetViewDiv) {
     this.pokemonList = [];
     this.divMap = document.getElementById(mapDiv);
     this.divStreetView = document.getElementById(streetViewDiv);
+    this.showStreetViewAvailable = null;
 };
 Map.prototype.setGMapPosition = function(nowLat,nowLng) {
 	if(this.map == null)
@@ -47,25 +48,18 @@ Map.prototype.setGMapPosition = function(nowLat,nowLng) {
           	author: 'Hassen'
           }
         });  
-      this.me.addListener('click',function(e){
+    this.me.addListener('click',function(e){
           	global.ws.send('{"Command":"GetTrainerProfile","RequestID":"1"}');
           });   
-      this.me.addListener('mouseover',function(e){
+    this.me.addListener('mouseover',function(e){
           });   
-	    if(global.config.showStreetView)
-  	  {      	
-  	  	this.streetview = new google.maps.StreetViewPanorama(this.divStreetView,{
-        	position:LatLng,
-        	map: this.map
-        });   
-      	google.maps.event.trigger(this.map, "resize");
-    	}
-  		else
-    	{
-    		$("#streetview").hide();
-      	this.divMap.style.width="100%";
-      	google.maps.event.trigger(this.map, "resize");
-    	}
+	  this.streetview = new google.maps.StreetViewPanorama(this.divStreetView,{
+      	position:LatLng,
+      	map: this.map
+      });   
+    this.streetViewService = new google.maps.StreetViewService();
+		this.drawStreetView();
+
   }
   else
   {
@@ -75,14 +69,45 @@ Map.prototype.setGMapPosition = function(nowLat,nowLng) {
     this.flightPath.push(LatLng);
    	this.me.setPosition(LatLng);
     
-    if(global.config.showStreetView)
+    if(global.config.showStreetView && global.config.followPlayer)
     {
-     	this.streetview.setPosition(LatLng);
-    	this.streetview.setVisible(true);
-
+			this.streetViewService.getPanoramaByLocation(LatLng, 10, function (streetViewPanoramaData, status) {
+			  if (status === google.maps.StreetViewStatus.OK) {
+	      	global.map.streetview.setPosition(LatLng);
+	    		global.map.streetview.setVisible(true);
+	    		global.map.showStreetViewAvailable = false;
+	    		if(global.map.showStreetViewAvailable != null)
+	    		{
+	    			toastr.clear(global.map.showStreetViewAvailable,{});
+	    			global.map.showStreetViewAvailable = null;
+	    		}
+	    	} else {
+	    		if(global.map.showStreetViewAvailable == null)
+	    		{
+	    			if (!global.config.noPopup)
+	        		global.map.showStreetViewAvailable=toastr.info("Street View not available","Street View",{
+	        		"positionClass": "toast-bottom-left"
+	    				});
+	    		}
+	    	}
+			});
+     	
     }
   }
   
+};
+Map.prototype.drawStreetView = function() {
+	    if(global.config.showStreetView)
+  	  {
+  	  	this.divMap.style.width="35%";
+  	  	$("#streetview").show();      	
+    	}
+  		else
+    	{
+    		$("#streetview").hide();
+      	this.divMap.style.width="100%";
+    	}
+     	google.maps.event.trigger(this.map, "resize");
 };
 Map.prototype.saveContext = function() {
     var stops = Array.from(this.pokestops, p => {
@@ -179,15 +204,12 @@ Map.prototype.initCatches = function() {
         	title: pkm,
         	icon: `./assets/pokemon_small/${pt.id}.png`
         });
-        if(global.config.showStreetView)
-        {
-        	new google.maps.Marker({
-	          position: LatLng,
-	          map: this.streetview,
-	        	title: pkm,
-	        	icon: `./assets/pokemon/${pt.id}.png`
-          });
-        }
+       	new google.maps.Marker({
+          position: LatLng,
+          map: this.streetview,
+        	title: pkm,
+        	icon: `./assets/pokemon/${pt.id}.png`
+        });
     }
 }
 
@@ -202,15 +224,12 @@ Map.prototype.initPokestops = function() {
         	title: pt.name,
         	icon: iconurl
         });
- 				if(global.config.showStreetView)
-        {
-        	pt.marker2=new google.maps.Marker({
-	          position: LatLng,
-	          map: this.streetview,
-	        	title: pt.name,
-	        	icon: iconurl
-          });
-        }        
+       	pt.marker2=new google.maps.Marker({
+          position: LatLng,
+          map: this.streetview,
+        	title: pt.name,
+        	icon: iconurl
+        });
     }
 }
 
@@ -255,15 +274,12 @@ Map.prototype.addCatch = function(pt) {
         	title: pkm,
         	icon: `./assets/pokemon_small/${pt.id}.png`,
         });
-        if(global.config.showStreetView)
-        {
-        	new google.maps.Marker({
-	          position: LatLng,
-	          map: this.streetview,
-	        	title: pkm,
-        	  icon: `./assets/pokemon/${pt.id}.png`
-          });
-        } 
+       	new google.maps.Marker({
+          position: LatLng,
+          map: this.streetview,
+        	title: pkm,
+       	  icon: `./assets/pokemon/${pt.id}.png`
+         });
     }
 }
 
@@ -283,15 +299,12 @@ Map.prototype.addVisitedPokestop = function(pt) {
         	title: pt.name,
         	icon: './assets/img/pokestop_cooldown.png'
         });
-        if(global.config.showStreetView)
-        {
-        	pt.marker2 = new google.maps.Marker({
-	          position: LatLng,
-	          map: this.streetview,
-	        	title: pt.name,
-        	  icon: './assets/img/pokestop_cooldown.png'
-          });
-        } 
+       	pt.marker2 = new google.maps.Marker({
+          position: LatLng,
+          map: this.streetview,
+        	title: pt.name,
+       	  icon: './assets/img/pokestop_cooldown.png'
+        });
 
     } else {
         Object.assign(ps, pt);
@@ -300,13 +313,11 @@ Map.prototype.addVisitedPokestop = function(pt) {
     ps.visited = true;
     if (ps && ps.marker) {
         ps.marker.setIcon(`./assets/img/pokestop_cooldown.png`);        
-        if(global.config.showStreetView)
-           ps.marker2.setIcon(`./assets/img/pokestop_cooldown.png`);        
+        ps.marker2.setIcon(`./assets/img/pokestop_cooldown.png`);        
         if (ps.name)
         {
         	ps.marker.setTitle(ps.name);
-        	if(global.config.showStreetView)
-        	  ps.marker2.setTitle(ps.name);
+      	  ps.marker2.setTitle(ps.name);
         }
     }
 }
@@ -340,19 +351,15 @@ Map.prototype.addPokestops = function(forts) {
         			title: pt.name,
         			icon: `./assets/img/${icon}.png`        			
         		});
-        		if(global.config.showStreetView)
-        		{
-        			pt.marker2 = new google.maps.Marker({
-	          		position: LatLng,
-	         			map: this.streetview,
-	        			title: pt.name,
-        		  	icon: `./assets/img/${icon}.png`
-          		});
-        		} 
+       			pt.marker2 = new google.maps.Marker({
+          		position: LatLng,
+         			map: this.streetview,
+        			title: pt.name,
+       		  	icon: `./assets/img/${icon}.png`
+         		});
         } else {
             pt.marker.setIcon(`./assets/img/${icon}.png`);
-            if(global.config.showStreetView)
-            	pt.marker2.setIcon(`./assets/img/${icon}.png`);
+           	pt.marker2.setIcon(`./assets/img/${icon}.png`);
         }
     }
 
@@ -382,8 +389,7 @@ Map.prototype.updatePokestopsStatus = function() {
                 icon = "pokestop_visited";
             }
             pt.marker.setIcon(`./assets/img/${icon}.png`);
-            if(global.config.showStreetView)
-              pt.marker2.setIcon(`./assets/img/${icon}.png`);
+            pt.marker2.setIcon(`./assets/img/${icon}.png`);
         }
     });
 }

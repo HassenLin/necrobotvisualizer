@@ -184,7 +184,7 @@
             var idx = global.map.snipeList.findIndex(p => p.uniqueId == id);
             var selected = global.map.snipeList[idx];
             selected.favorite = !selected.favorite;
-
+            global.map.addPokemonMark(selected.pokemonId,`${selected.name}(${selected.distance.toFixed(2)}m)` ,selected.latitude, selected.longitude, true);
             $(this).find("img").attr('src', `./assets/img/favorite_${selected.favorite ? 'set' : 'unset'}.png`);
             wssend({
                 Command: selected.favorite?"SnipePokemon":"RemovePokemon",

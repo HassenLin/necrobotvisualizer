@@ -243,7 +243,25 @@ Map.prototype.addToPath = function(pt) {
     }
     this.setGMapPosition(pt.lat,pt.lng);
 }
-
+Map.prototype.addPokemonMark = function(id, title, lat, lng, big){
+				var LatLng=new google.maps.LatLng( lat, lng );
+				
+				var markericon =`./assets/pokemon_small/${id}.png`
+				if(big)
+				  var markericon =`./assets/pokemon/${id}.png`
+        new google.maps.Marker({
+          position: LatLng,
+          map: this.map, 
+        	title: title,
+        	icon: markericon,
+        });
+       	new google.maps.Marker({
+          position: LatLng,
+          map: this.streetview,
+        	title: title,
+       	  icon: `./assets/pokemon/${id}.png`
+        });
+}
 Map.prototype.addCatch = function(pt) {
 
     if (!pt.lat) {
@@ -267,20 +285,7 @@ Map.prototype.addCatch = function(pt) {
         //this.layerCatches.clearLayers();
         this.initCatches();
     } else {
-				var LatLng=new google.maps.LatLng( pt.lat, pt.lng );
-				
-        new google.maps.Marker({
-          position: LatLng,
-          map: this.map, 
-        	title: pkm,
-        	icon: `./assets/pokemon_small/${pt.id}.png`,
-        });
-       	new google.maps.Marker({
-          position: LatLng,
-          map: this.streetview,
-        	title: pkm,
-       	  icon: `./assets/pokemon/${pt.id}.png`
-         });
+				this.addPokemonMark(pt.id, pkm, pt.lat, pt.lng, false);
     }
 }
 

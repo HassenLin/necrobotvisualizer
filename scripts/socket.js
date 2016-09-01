@@ -149,6 +149,25 @@ function listenToWebSocket() {
                 name: inventory.getPokemonName(msg.Id)
             };
             pokemonToast(pkm, { title: "A Pokemon Evolved" });
+				} else if (command.indexOf("HumanWalkSnipEvent") >= 0) {                
+             var pkm = Array.from(msg.Data.$values, p => {
+                return {
+                    id: p.Id,
+                    pokemonId: p.PokemonId,
+                    distance: p.Distance,
+                    estimatedTime: p.EstimatedTime,
+                    expiredTime: p.ExpiredTime,
+										isCatching: p.IsCatching,
+										isFake: p.IsFake,
+										isVisited: p.IsVisited,
+										latitude: p.Latitude,
+										longitude: p.Longitude,
+										uniqueId: p.UniqueId,
+										favorite: false,
+										name: inventory.getPokemonName(p.PokemonId)
+                }
+            });
+            global.map.displaySnipeList(pkm);
         } else if (command.indexOf("TrainerProfile") >= 0) {    
 						    if (global.config.noPopup) return;
 						

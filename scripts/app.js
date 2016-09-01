@@ -41,6 +41,16 @@
                 wssend("PokemonList");
             }
         });
+        $("#snipeLink").click( function() {
+            if ($(".inventory").css("opacity") == "1" && $(".inventory .data .egg").length) {
+                $(".inventory").removeClass("active");
+            } else { 
+                wssend({
+                	Command: "GetPokemonSnipeList",
+                	RequestID: "0"
+                }); 
+            }
+        });
         $("#eggsLink").click( function() {
             if ($(".inventory").css("opacity") == "1" && $(".inventory .data .egg").length) {
                 $(".inventory").removeClass("active");
@@ -68,7 +78,15 @@
 
         $(".inventory .refresh").click(function() {
             console.log("Refresh");
-            wssend(global.active[0].toUpperCase() + global.active.substring(1) + "List");
+            if(global.active=="snipe")
+            {
+            	wssend({
+                	Command: "GetPokemonSnipeList",
+                	RequestID: "0"
+                });
+            }
+            else
+            	wssend(global.active[0].toUpperCase() + global.active.substring(1) + "List");
         });
 
         $(".inventory .close").click(function() {
@@ -157,6 +175,20 @@
                 Command: "FavoritePokemon",
                 PokemonId: id,
                 Favorite: selected.favorite
+            });
+        });
+        
+        $(".inventory .data").on("click", "a.snipeAction", function() {
+            var parent = $(this).parent();
+            var id = parent.data().id;
+            var idx = global.map.snipeList.findIndex(p => p.uniqueId == id);
+            var selected = global.map.snipeList[idx];
+            selected.favorite = !selected.favorite;
+
+            $(this).find("img").attr('src', `./assets/img/favorite_${selected.favorite ? 'set' : 'unset'}.png`);
+            wssend({
+                Command: selected.favorite?"SnipePokemon":"RemovePokemon",
+                Id: id
             });
         });
 

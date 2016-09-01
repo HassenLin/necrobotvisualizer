@@ -12,6 +12,7 @@ var Map = function(mapDiv,streetViewDiv) {
     this.catches = [];
     this.pokestops = [];
     this.pokemonList = [];
+    this.snipeList = [];
     this.divMap = document.getElementById(mapDiv);
     this.divStreetView = document.getElementById(streetViewDiv);
     this.showStreetViewAvailable = null;
@@ -459,6 +460,32 @@ Map.prototype.displayPokemonList = function(all, sortBy, eggs) {
         `);
     });
     $(".pokemonsort").show();
+    $(".inventory").show().addClass("active");
+}
+
+Map.prototype.displaySnipeList = function(SnipList) {
+    console.log("Snipe list");
+    this.snipeList = SnipList;
+    global.active = "snipe";    
+		$(".inventory .sort").hide();
+    $(".inventory .numberinfo").text(`${SnipList.length}`);
+    var div = $(".inventory .data");
+    div.html(``);
+    SnipList.forEach(function(elt) {
+
+        var catchingClass = elt.isCatching ? "canEvolve" : "";
+        var fav = elt.favorite ? "set" : "unset";
+        div.append(`
+            <div class="pokemon">
+                <div class="transfer" data-id='${elt.uniqueId}'>
+                    <a title='Snipe' href="#" class="snipeAction"><img src="./assets/img/favorite_${fav}.png" /></a>
+                </div>
+                <span class="imgspan ${catchingClass}"><img src="./assets/pokemon/${elt.pokemonId}.png" /></span>
+                <span class="name">${elt.name}(${elt.distance.toFixed(2)}m)</span>
+                <span class="info">Expired:${elt.expiredTime.split("T")[1].split("+")[0]}</span>
+            </div>
+        `);
+    });
     $(".inventory").show().addClass("active");
 }
 

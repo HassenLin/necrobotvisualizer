@@ -25,21 +25,27 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vex-js/2.3.4/js/vex.combined.min.js"></script>
     <script>vex.defaultOptions.className = 'vex-theme-default';</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+  	
+  	
     <script>if (window.module) module = window.module;</script>
-
     <script src="scripts/config.js"></script>
     <script src="scripts/inventory.js"></script>
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>    
     <script src="scripts/map.js"></script>
     <script src="scripts/socket.js"></script>
+    <script src="scripts/gauge.js"></script>
     <script src="scripts/app.js"></script>
   </head>
   
   <body>
     <div class="content" >
-      <div id='map' style = 'width: 35%;float:left;'></div>
-      <div id='streetview' style = 'width: 65%;float:left;'></div>
+      <div id="map" style = "width: 35%;float:left;"></div>
+      <div id="streetview" style = "width: 65%;float:left;"></div>
+    </div>
+    <div id="walkspeed" style="position:absolute; bottom:30px; left:0px; z-index:1">  
+        <canvas id="speedCanvas" width="100" height="100"> </canvas>
+        <div id="speedCanvas-textfield" style="position: absolute; top: 35px; left: 0; right: 0; text-align: center; font-size: 2em; font-weight: bold; color: black; font-family: 'Amaranth', sans-serif;"></div>
     </div>
     <div class="toolbar">
       <div style="display:none" title="Show Pokemon"><a href="#" id="pokemonLink"><img width="20" src="./assets/img/pokeball.png" /></a></div>

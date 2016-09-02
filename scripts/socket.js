@@ -59,6 +59,7 @@ function listenToWebSocket() {
                 });
             }
         } else if (command.indexOf("PokemonCaptureEvent") >= 0) {
+        		global.gauge.set(0.1);
             if (msg.Status = 1 && msg.Exp > 0) {
                 var pkm = {
                     id: msg.Id,
@@ -74,6 +75,7 @@ function listenToWebSocket() {
             }
         } else if (command.indexOf("FortUsedEvent") >= 0) {
             //console.log(msg);
+            global.gauge.set(0.1);
             if (msg.Latitude && msg.Longitude) {
                 global.map.addVisitedPokestop({
                     id: msg.Id,
@@ -221,30 +223,43 @@ function listenToWebSocket() {
         } else if (command.indexOf("set_destination") >= 0) {
             global.map.manualDestinationReached()
         } else if (command.indexOf("TransferPokemonEvent") >= 0) {
+        	console.log("Socket TransferPokemonEvent no handler");
             // nothing
-        } else if (command.indexOf("FortTargetEvent") >= 0) {
+        } else if (command.indexOf("FortTargetEvent") >= 0) {        	
+        	console.log("Socket FortTargetEvent no handler");
             // nothing
         } else if (command.indexOf("NoticeEvent") >= 0) {
+        	console.log("Socket NoticeEvent no handler");
             // nothing
         } else if (command.indexOf("WarnEvent") >= 0) {
+        	console.log("Socket WarnEvent no handler");
             // nothing
         } else if (command.indexOf("SnipeScanEvent") >= 0) {
+        	console.log("Socket SnipeScanEvent no handler");
             // nothing
         } else if (command.indexOf("ItemRecycledEvent") >= 0) {
+        	console.log("Socket ItemRecycledEvent no handler");
             // nothing
         } else if (command.indexOf("EvolveCountEvent") >= 0) {
+        	console.log("Socket EvolveCountEvent no handler");
             // nothing
         } else if (command.indexOf("DebugEvent") >= 0) {
+        	console.log("Socket DebugEvent no handler");
             // nothing
         } else if (command.indexOf("SnipeEvent") >= 0) {
+        	console.log("Socket SnipeEvent no handler");
             // nothing
         } else if (command.indexOf("EggIncubatorStatusEvent") >= 0) {
+        	console.log("Socket EggIncubatorStatusEvent no handler");
             // nothing
         } else if (command.indexOf("HumanWalkingEvent") >= 0) {
+        	global.gauge.set(msg.CurrentWalkingSpeed*100);
             // nothing
         } else if (command.indexOf("UnaccurateLocation") >= 0) {
+        	console.log("Socket UnaccurateLocation no handler");
             // nothing 
         } else if (command.indexOf("UseBerryEvent") >= 0) {
+        	console.log("Socket UseBerryEvent no handler");
             // nothing
         } else if (command.indexOf("ErrorEvent") >= 0) {
             console.log(msg.Message);

@@ -149,14 +149,22 @@ function listenToWebSocket() {
                 name: inventory.getPokemonName(msg.Id)
             };
             pokemonToast(pkm, { title: "A Pokemon Evolved" });
-				} else if (command.indexOf("HumanWalkSnipEvent") >= 0) {                
-             var pkm = Array.from(msg.Data.$values, p => {
+				} else if (command.indexOf("HumanWalkSnipEvent") >= 0) { 
+					   var Now = (new Date()).getTime();
+					   var ed = new Date();
+					   var values = msg.Data.$values.filter( p => {
+					   		return (Date.parse(p.ExpiredTime)- 5 > Now)
+					   });
+
+             var pkm = Array.from(values, p => {
+             		ed.setTime(Date.parse(p.ExpiredTime) - Now);
+             	  expired = `${ed.getUTCHours()}:${ed.getUTCMinutes()}:${ed.getUTCSeconds()}`;
                 return {
                     id: p.Id,
                     pokemonId: p.PokemonId,
                     distance: p.Distance,
                     estimatedTime: p.EstimatedTime,
-                    expiredTime: p.ExpiredTime,
+                    expiredTime: expired,
 										isCatching: p.IsCatching,
 										isFake: p.IsFake,
 										isVisited: p.IsVisited,

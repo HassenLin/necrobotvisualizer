@@ -475,6 +475,7 @@ Map.prototype.displaySnipeList = function(SnipList) {
 		$(".inventory .sort").hide();
     $(".inventory .numberinfo").text(`${SnipList.length}`);
     var div = $(".inventory .data");
+    
     div.html(``);
     SnipList.forEach(function(elt) {
 
@@ -487,7 +488,7 @@ Map.prototype.displaySnipeList = function(SnipList) {
                 </div>
                 <span class="imgspan ${catchingClass}"><img src="./assets/pokemon/${elt.pokemonId}.png" /></span>
                 <span class="name">${elt.name}(${elt.distance.toFixed(2)}m)</span>
-                <span class="info">Expired:${elt.expiredTime.split("T")[1].split("+")[0]}</span>
+                <span class="info">Remain: ${elt.expiredTime}</span>
             </div>
         `);
     });

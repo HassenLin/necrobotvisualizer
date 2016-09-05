@@ -566,6 +566,14 @@ Map.prototype.setDestination = function(e){
 				lat:lat,
 				lng:lng
 			}));
+		global.ws.send(JSON.stringify(
+			{
+				Command:"ForceUsePokestop",
+				RequestID:"2",
+				lat:lat,
+				lng:lng
+			}));
+			
 };
 Map.prototype.manualDestinationReached = function() {
 		_self.destination.setMap(null);

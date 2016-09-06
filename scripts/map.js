@@ -568,7 +568,7 @@ Map.prototype.setDestination = function(e){
 			}));
 		global.ws.send(JSON.stringify(
 			{
-				Command:"ForceUsePokestop",
+				Command:"SetMoveToTarget",
 				RequestID:"2",
 				lat:lat,
 				lng:lng
